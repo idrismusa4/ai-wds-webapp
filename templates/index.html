@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weapon Detection System</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --background-color: #ecf0f1;
+            --text-color: #333;
+            --success-color: #2ecc71;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .navbar {
+            background-color: var(--secondary-color);
+            color: #fff;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: auto;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+
+        .upload-section, .result-section, .team-section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-input-wrapper .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-input-wrapper .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .submit-btn {
+            margin-top: 1rem;
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .result-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .team-members {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .team-member {
+            text-align: center;
+            margin: 1rem;
+        }
+
+        .team-member-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+        }
+
+        h1, h2, h3 {
+            color: var(--secondary-color);
+        }
+
+        .success-message {
+            color: var(--success-color);
+            font-weight: bold;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .image-preview {
+            max-width: 300px;
+            max-height: 300px;
+            margin-top: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            .team-members {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        #detection-stats {
+            margin-top: 1rem;
+            font-family: monospace;
+            white-space: pre-wrap;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div >
+            <img src="../static/logo.png" alt="SC" width="150px" height="50px" >
+        </div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#upload">Upload</a>
+            <a href="#team">Team</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section id="home" class="upload-section">
+            <h1>Weapon Detection System (RAIN Hackathon 1.0)</h1>
+            <p>Upload an image for weapon detection. Only single output is allowed.</p>
+            <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form" id="upload-form">
+                <div class="file-input-wrapper">
+                    <button class="btn" type="button">Choose an image</button>
+                    <input type="file" name="file" accept="image/*" required id="image-input">
+                </div>
+                <p class="success-message" id="success-message">Image upload successful!</p>
+                <img src="#" alt="Image preview" class="image-preview" id="image-preview">
+                <button type="submit" class="submit-btn">Detect Weapons</button>
+            </form>
+        </section>
+
+        <section class="result-section">
+            <h2>Detection Result</h2>
+            <div id ="result-container">
+
+            </div>
+            <p id="detection-stats"></p>
+
+        </section>
+
+        <section id="team" class="team-section">
+            <h2>Our Team</h2>
+            <div class="team-members">
+                <div class="team-member">
+                    <img src="../static/drumar.jpg" alt="Dr Umar" class="team-member-image">
+                    <h3>Umar Adam Ibrahim Ph.D</h3>
+                    <p>Team Lead and AI Expert (Ph.D. in Computer Science, Certified AI Expert)</p>
+                </div>
+                <div class="team-member">
+                    <img src="../static/Idris.jpg" alt="Idris" class="team-member-image">
+                    <h3>Musa Idris Shaaba</h3>
+                    <p>AI Software Engineer (B.Sc. in Software Engineering)</p>
+                </div>
+                <div class="team-member">
+                    <img src="../static/mimi.jpg" alt="Mike Johnson" class="team-member-image">
+                    <h3>Shafa'atu Aminu</h3>
+                    <p>Software Engineer (B.Sc. in Software Engineering)</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('upload-form');
+            const fileInput = document.getElementById('image-input');
+            const successMessage = document.getElementById('success-message');
+            const imagePreview = document.getElementById('image-preview');
+            const resultContainer = document.getElementById('result-container');
+    
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                        successMessage.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+    
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (!fileInput.files.length) {
+                    alert('Please select an image to upload.');
+                    return;
+                }
+    
+                const formData = new FormData(form);
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    resultContainer.innerHTML = `
+                        <img src="${data.image_url}" alt="Detected Image" class="result-image">
+                    `;
+                    document.getElementById('detection-stats').textContent = data.stats;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    resultContainer.innerHTML = `<p>Error: ${error.message}</p>`;
+                    document.getElementById('detection-stats').textContent = '';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

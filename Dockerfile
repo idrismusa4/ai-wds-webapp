@@ -8,8 +8,10 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the model and app files
-COPY best.pt /app/static/models/best.pt
+# Copy the model file from the correct directory
+COPY static/models/best.pt /app/static/models/best.pt
+
+# Copy the rest of the project files
 COPY . /app
 
 # Expose port 8080

@@ -6,7 +6,7 @@ from weapon_detection import WeaponDetectionSystem
 
 app = Flask(__name__)
 detector = WeaponDetectionSystem(model_size='m')
-detector.load_model('../best.pt')
+detector.load_model('static/models/best.pt')
 
 @app.route('/')
 def index():
@@ -52,5 +52,6 @@ def upload():
     return jsonify({"error": "File upload failed"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=8080)
+
 

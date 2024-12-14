@@ -10,7 +10,12 @@ detector.load_model('static/models/best.pt')
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('templates/index.html')
+
+@app.route("/health")
+def health():
+    return "OK", 200
+
 
 @app.route('/upload', methods=['POST'])
 def upload():

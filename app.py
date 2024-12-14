@@ -48,8 +48,12 @@ def upload():
         total_time = time.time() - start_time
         
         if annotated_image is not None:
-            output_path = os.path.join('static/annotated_images', file.filename)
+            output_dir = os.path.join('static', 'annotated_images')
+            os.makedirs(output_dir, exist_ok=True)
+            output_path = os.path.join(output_dir, file.filename)
             cv2.imwrite(output_path, annotated_image)
+            
+            app.logger.info(f"Annotated image saved at: {output_path}")
             
             height, width = annotated_image.shape[:2]
             weapon_count = sum(1 for d in detections if d['class'] == 'Weapon')

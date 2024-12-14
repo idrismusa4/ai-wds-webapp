@@ -283,6 +283,7 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Response data:', data); // Log the response data
                     if (data.error) {
                         throw new Error(data.error);
                     }
@@ -299,6 +300,5 @@
             });
         });
     </script>
-</body>
 </html>
 

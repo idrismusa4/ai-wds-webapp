@@ -21,5 +21,5 @@ COPY . /app
 # Expose port 8080
 EXPOSE 8080
 
-# Start the app using Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
+# Start the app using Gunicorn with increased timeout and asynchronous workers
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--timeout", "120", "--worker-class", "gevent", "app:app"]

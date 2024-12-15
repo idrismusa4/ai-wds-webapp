@@ -35,6 +35,11 @@ def upload():
         image_path = os.path.join(uploads_dir, file.filename)
         file.save(image_path)
         
+        # Resize the image to reduce processing time and memory usage
+        image = cv2.imread(image_path)
+        resized_image = cv2.resize(image, (640, 480))
+        cv2.imwrite(image_path, resized_image)
+        
         start_time = time.time()
         preprocess_time = time.time()
         try:
@@ -57,11 +62,13 @@ def upload():
             
             height, width = annotated_image.shape[:2]
             weapon_count = sum(1 for d in detections if d['class'] == 'Weapon')
+            avg_confidence = sum(d['confidence'] for d in detections if d['class'] == 'Weapon') / weapon_count if weapon_count > 0 else 0
             
             stats = (
                 f"0: {width}x{height} {weapon_count} weapon, {total_time*1000:.1f}ms\n"
                 f"Speed: {preprocess_time*1000:.1f}ms preprocess, {inference_time*1000:.1f}ms inference, "
-                f"{postprocess_time*1000:.1f}ms postprocess per image at shape (1, 3, {width}, {height})"
+                f"{postprocess_time*1000:.1f}ms postprocess per image at shape (1, 3, {width}, {height})\n"
+                f"Average confidence score: {avg_confidence*100:.2f}% ({avg_confidence:.2f}) sure there's a weapon within the bounding box"
             )
             
             return jsonify({

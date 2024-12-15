@@ -190,6 +190,16 @@
             padding: 10px;
             border-radius: 5px;
         }
+
+        #loader {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        #loader img {
+            width: 50px; /* Adjust the size as needed */
+            height: 50px; /* Adjust the size as needed */
+        }
     </style>
 </head>
 <body>
@@ -221,11 +231,11 @@
 
         <section class="result-section">
             <h2>Detection Result</h2>
-            <div id ="result-container">
-
+            <div id="loader" style="display: none;">
+                <img src="/static/loader.gif" alt="Loading...">
             </div>
+            <div id="result-container"></div>
             <p id="detection-stats"></p>
-
         </section>
 
         <section id="team" class="team-section">
@@ -257,6 +267,7 @@
             const successMessage = document.getElementById('success-message');
             const imagePreview = document.getElementById('image-preview');
             const resultContainer = document.getElementById('result-container');
+            const loader = document.getElementById('loader');
     
             fileInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
@@ -279,12 +290,17 @@
                 }
     
                 const formData = new FormData(form);
+                loader.style.display = 'block'; // Show the loader
+                resultContainer.innerHTML = ''; // Clear previous results
+                document.getElementById('detection-stats').textContent = ''; // Clear previous stats
+    
                 fetch('/upload', {
                     method: 'POST',
                     body: formData
                 })
                 .then(response => response.json())
                 .then(data => {
+                    loader.style.display = 'none'; // Hide the loader
                     console.log('Response data:', data); // Log the response data
                     if (data.error) {
                         throw new Error(data.error);
@@ -295,6 +311,7 @@
                     document.getElementById('detection-stats').textContent = data.stats;
                 })
                 .catch(error => {
+                    loader.style.display = 'none'; // Hide the loader
                     console.error('Error:', error);
                     resultContainer.innerHTML = `<p>Error: ${error.message}</p>`;
                     document.getElementById('detection-stats').textContent = '';
@@ -304,4 +321,3 @@
     </script>
 </body>
 </html>
-

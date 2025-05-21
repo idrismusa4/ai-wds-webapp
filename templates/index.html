@@ -4,208 +4,281 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weapon Detection System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #3498db;
-            --secondary-color: #2c3e50;
-            --accent-color: #e74c3c;
-            --background-color: #ecf0f1;
-            --text-color: #333;
-            --success-color: #2ecc71;
+            --primary-color: #6366f1;
+            --secondary-color: #18181b;
+            --accent-color: #f43f5e;
+            --background-color: #f8fafc;
+            --card-bg: #fff;
+            --text-color: #22223b;
+            --success-color: #22c55e;
+            --shadow: 0 8px 32px rgba(99,102,241,0.08);
+            --border-radius: 20px;
         }
-
         body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
+            font-family: 'Inter', Arial, sans-serif;
+            background: var(--background-color);
+            color: var(--text-color);
             margin: 0;
             padding: 0;
-            background-color: var(--background-color);
-            color: var(--text-color);
         }
-
         .navbar {
-            background-color: var(--secondary-color);
-            color: #fff;
-            padding: 1rem;
+            background: var(--card-bg);
+            color: var(--secondary-color);
+            padding: 1.5rem 2.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid #e5e7eb;
         }
-
         .logo-placeholder {
-            width: 50px;
-            height: 50px;
-            background-color: var(--primary-color);
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary-color), #a5b4fc);
             display: flex;
             justify-content: center;
             align-items: center;
             border-radius: 50%;
             font-weight: bold;
-        }
-
-        .nav-links a {
             color: #fff;
-            text-decoration: none;
-            margin-left: 1rem;
-            transition: color 0.3s ease;
+            font-size: 2rem;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.12);
         }
-
+        .nav-links a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.02em;
+            transition: color 0.2s;
+        }
         .nav-links a:hover {
             color: var(--primary-color);
         }
-
         .container {
-            width: 80%;
+            width: 95%;
             max-width: 1200px;
-            margin: auto;
-            overflow: hidden;
-            padding: 2rem 0;
+            margin: 3rem auto 0 auto;
+            padding-bottom: 2rem;
         }
-
         .upload-section, .result-section, .team-section {
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2.8rem 2.2rem;
+            margin-bottom: 2.8rem;
+            box-shadow: var(--shadow);
+            border: 1px solid #e5e7eb;
         }
-
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .upload-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+        .upload-section p {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
         .upload-form {
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 1.5rem;
+            width: 100%;
         }
-
         .file-input-wrapper {
             position: relative;
             overflow: hidden;
-            display: inline-block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 340px;
+            height: 120px;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+            border: 2px dashed var(--primary-color);
+            border-radius: 16px;
             cursor: pointer;
+            transition: border-color 0.2s;
         }
-
+        .file-input-wrapper:hover {
+            border-color: var(--accent-color);
+        }
         .file-input-wrapper input[type=file] {
             font-size: 100px;
             position: absolute;
             left: 0;
             top: 0;
             opacity: 0;
+            width: 100%;
+            height: 100%;
             cursor: pointer;
         }
-
         .file-input-wrapper .btn {
             display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--primary-color);
-            color: white;
+            padding: 16px 32px;
+            background: linear-gradient(90deg, var(--primary-color), #818cf8);
+            color: #fff;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.10);
+            transition: background 0.2s, transform 0.1s;
+            z-index: 2;
         }
-
         .file-input-wrapper .btn:hover {
-            background-color: #2980b9;
-            cursor: pointer;
+            background: linear-gradient(90deg, #818cf8, var(--primary-color));
+            transform: translateY(-2px) scale(1.04);
         }
-
         .submit-btn {
-            margin-top: 1rem;
-            padding: 10px 20px;
-            background-color: var(--accent-color);
-            color: white;
+            margin-top: 0.5rem;
+            padding: 16px 36px;
+            background: linear-gradient(90deg, var(--accent-color), #fb7185);
+            color: #fff;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 8px rgba(244,63,94,0.10);
+            transition: background 0.2s, transform 0.1s;
         }
-
         .submit-btn:hover {
-            background-color: #c0392b;
-            cursor: pointer;
+            background: linear-gradient(90deg, #fb7185, var(--accent-color));
+            transform: translateY(-2px) scale(1.04);
         }
-
+        .success-message {
+            color: var(--success-color);
+            font-weight: 700;
+            margin-top: 0.5rem;
+            display: none;
+            font-size: 1.1rem;
+        }
+        .image-preview {
+            max-width: 340px;
+            max-height: 340px;
+            margin-top: 1rem;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+        .result-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .result-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+        }
         .result-image {
             max-width: 100%;
             height: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-top: 1.2rem;
         }
-
-        .team-members {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
-
-        .team-member {
-            text-align: center;
-            margin: 1rem;
-        }
-
-        .team-member-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 1rem;
-        }
-
-        h1, h2, h3 {
-            color: var(--secondary-color);
-        }
-
-        .success-message {
-            color: var(--success-color);
-            font-weight: bold;
-            margin-top: 1rem;
-            display: none;
-        }
-
-        .image-preview {
-            max-width: 300px;
-            max-height: 300px;
-            margin-top: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                width: 95%;
-            }
-            
-            .team-members {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-
         #detection-stats {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             font-family: monospace;
             white-space: pre-wrap;
-            background-color: #f0f0f0;
-            padding: 10px;
-            border-radius: 5px;
+            background: #f3f4f6;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            color: #374151;
+            width: 100%;
+            max-width: 600px;
         }
-
         #loader {
             text-align: center;
             margin-top: 1rem;
         }
-
         #loader img {
-            width: 50px; /* Adjust the size as needed */
-            height: 50px; /* Adjust the size as needed */
+            width: 56px;
+            height: 56px;
+        }
+        .team-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .team-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+        .team-members {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            width: 100%;
+        }
+        .team-member {
+            text-align: center;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(99,102,241,0.06);
+            padding: 2rem 1.2rem 1.5rem 1.2rem;
+            flex: 1 1 240px;
+            min-width: 220px;
+            max-width: 320px;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .team-member:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 8px 32px rgba(99,102,241,0.13);
+        }
+        .team-member-image {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 2px 8px rgba(99,102,241,0.10);
+        }
+        .team-member h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .team-member p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+        @media (max-width: 900px) {
+            .container {
+                width: 99%;
+            }
+            .team-members {
+                flex-direction: column;
+                align-items: center;
+            }
+            .upload-section, .result-section, .team-section {
+                padding: 1.2rem 0.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <nav class="navbar">
         <div >
-            <img src="../static/logo.png" alt="SC" width="150px" height="50px" >
+            <img src="/static/logo.jpeg" alt="SC" width="150px" height="100px" >
         </div>
         <div class="nav-links">
             <a href="#home">Home</a>
@@ -216,7 +289,7 @@
 
     <div class="container">
         <section id="home" class="upload-section">
-            <h1>Weapon Detection System (RAIN Hackathon 1.0)</h1>
+            <h1>AI Weapon Detection System</h1>
             <p>Upload an image for weapon detection. Only single output is allowed.</p>
             <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form" id="upload-form">
                 <div class="file-input-wrapper">
@@ -256,6 +329,11 @@
                     <h3>Shafa'atu Aminu</h3>
                     <p>Software Engineer (B.Sc. in Software Engineering)</p>
                 </div>
+                <div class="team-member">
+                    <img src="../static/zeenat.png" alt="Mike Johnson" class="team-member-image">
+                    <h3>Zeenat Sulayman</h3>
+                    <p>Project Manager/Software Engineer (B.Sc. in Software Engineering)</p>
+                </div>
             </div>
         </section>
     </div>
@@ -268,6 +346,13 @@
             const imagePreview = document.getElementById('image-preview');
             const resultContainer = document.getElementById('result-container');
             const loader = document.getElementById('loader');
+            const chooseBtn = document.querySelector('.file-input-wrapper .btn');
+            if (chooseBtn && fileInput) {
+                chooseBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    fileInput.click();
+                });
+            }
     
             fileInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];

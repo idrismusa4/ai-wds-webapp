@@ -1,25 +1,34 @@
-# Use the official Python image
-FROM python:3.10
+# Use a stable slim Python base (smaller + fewer surprises)
+FROM python:3.10-slim
 
-# Install system dependencies required for OpenCV
+# Prevent Python from writing .pyc files & buffering logs
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies (FIXED)
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy the requirements file and install dependencies
+# Install Python deps first (better caching)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the model file and application files
-COPY static/models/best.pt /app/static/models/best.pt
-COPY . /app
+# Copy everything else
+COPY . .
 
-# Expose port 8080
+# Make sure model path exists (avoid runtime crash)
+RUN mkdir -p /app/static/models
+
+# Expose port
 EXPOSE 8080
 
-# Start the app using Gunicorn with increased timeout and asynchronous workers
+# Run app
 CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--timeout", "120", "--worker-class", "gevent", "app:app"]
